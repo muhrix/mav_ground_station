@@ -16,8 +16,7 @@
   <depend package="osmgpsmap"/>
   <depend package="rosbag"/>
   <depend package="std_msgs"/>
-  <depend package="gpsd_common"/>
-  <depend package="gps_client"/>
+  <depend package="gpsd_client"/>
   <depend package="tf"/>
   <rosdep name="libgtk2.0-dev"/>
   <rosdep name="libglade2-dev"/>
