@@ -1,23 +1,28 @@
 Read me for osmgpsmap package
 ===============================
 
-Contents.
+Contents:
 ---------
-About this packages.
+About this package.
 Requirements.
 Basic Usage.
 
 ------------------------------------------------------------
 ------------------------------------------------------------
-About this pkg:
+About this package:
 ------------------------------------------------------------
-osmgpsmap is a package providing a local ROS installation of
-osm-gps-map v0.72.
+osmgpsmap is a package providing a local installation of
+osm-gps-map for ROS Fuerte running on Ubuntu 12.04.
 osm-gps-map is released under the GNU General Public License (GPL).
 Please read the file COPYING.txt.
- 
+
+Copyright (C) 2013, FEI University Centre
+This package was modified by:
+	Murilo Fernandes Martins <muhrix@gmail.com>
+	http://www.fei.edu.br/~murilo
+
 Copyright (C) 2010, CCNY Robotics Lab
-This pkg was assembled by:
+This pkg was originally assembled by:
 	Gautier Dumonteil <gautier.dumonteil@gmail.com>
 	http://robotics.ccny.cuny.edu
 
@@ -25,22 +30,25 @@ This pkg was assembled by:
 ------------------------------------------------------------
 Requirements:
 ------------------------------------------------------------
-osmgpsmap requires libsoup2.4. 
-Make sure all packages dependances are check.
-This pkg run curently only on 10.04 ubuntu due to lib change.
+osmgpsmap requires libsoup2.4 (more specifically, Ubuntu packages
+libsoup2.4-1 and libsoup2.4-dev). 
+It is advisable to install such dependencies prior to building
+this package (ideally, rosdep should take care of dependencies).
+This package was modified to work with ROS Fuerte on Ubuntu 12.04.
 
-This is currently compatible with the UMD gpsd_client
-http://www.ros.org/browse/details.php?name=gpsd_client
-If you have trouble compiling gpsd_client try our git mirror
-http://robotics.ccny.cuny.edu/git/umd-ros-pkg.git
+This is currently compatible with the UMD gpsd_client:
+http://www.ros.org/wiki/gpsd_client
+ROS Fuerte has a package called ros-fuerte-gps-umd, which
+should be installed.
 ------------------------------------------------------------
 ------------------------------------------------------------
 Basic Usage:
 ------------------------------------------------------------
-Download osmgpsmap packages in your ROS packages directory
-Then, in a shell:
+NOTICE: currently, this modified version of osmgpsmap is
+bundled with ccny_ground_station.
+(https://github.com/muhrix/ccny_ground_station/)
+
+To install dependencies and compile, run in a shell:
 	roscd osmgpsmap/
 	rosdep install osmgpsmap
-	make
-	
-or rosmake --rosdep-install osmgpsmap
+	rosmake
