@@ -2,7 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b osmgpsmap is a package providing a local ROS installation of <a href="http://nzjrs.github.com/osm-gps-map/">osm-gps-map</a>.
+\b osmgpsmap is a package providing a local installation for ROS Fuerte on Ubuntu 12.04 of <a href="http://github.com/muhrix/osm-gps-map/">osm-gps-map</a> forked from the original <a href="http://nzjrs.github.com/osm-gps-map/">osm-gps-map</a>.
 
 \section codeapi Code API
 
