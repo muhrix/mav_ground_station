@@ -9,8 +9,7 @@ Map Viewer for GPS position data provided by gpsd_client
   <depend package="roscpp"/>
   <depend package="roslib"/>
   <depend package="nav_msgs"/>
-  <depend package="gps_common"/>
-  <depend package="gps_client"/>
+  <depend package="gpsd_client"/>
   <depend package="osmgpsmap"/>
   <rosdep name="gpsd"/>
   <rosdep name="libglade2-dev"/>

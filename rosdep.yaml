@@ -1,5 +1,5 @@
 gpsd:
-  ubuntu:
+  ubuntu: 
     12.04: gpsd libgps-dev
 libglade2-dev:
   ubuntu:

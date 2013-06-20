@@ -6,8 +6,8 @@
   <license>GPL</license>
   <review status="3rdparty" notes=""/>
   <url>http://github.com/muhrix/osm-gps-map/</url>
-  <rosdep name="libsoup"/>
   <export>
     <cpp cflags="-I${prefix}/include/" lflags="-L${prefix}/lib -Wl,-rpath,${prefix}/lib"/>
   </export>
+  <rosdep name="libsoup"/>
 </package>
