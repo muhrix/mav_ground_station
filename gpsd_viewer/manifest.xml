@@ -2,7 +2,7 @@
   <description brief="gpsd_viewer">
 Map Viewer for GPS position data provided by gpsd_client
   </description>
-  <author>Modified by Murilo Fernandes Martins, Created by Gautier Dumonteil, William Morris</author>
+  <author>Modified by Murilo Fernandes Martins; Created by Gautier Dumonteil, William Morris</author>
   <license>GPL</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/gpsd_viewer</url>
