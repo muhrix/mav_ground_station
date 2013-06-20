@@ -2,9 +2,11 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b ground_station is a package for ROS that typicaly subscribe to several topics and update an Gtk+ based GUI. <br>
-The GUI contains several widgets made to look like to real flight instruments in order to allow easy feedbacks for the user/pilot.
+\b ground_station is a ROS package for Fuerte/Ubuntu 12.04 which typicaly subscribes to several topics and updates a Gtk+ based GUI. <br>
+The GUI contains several widgets made to look like real flight instruments in order to allow easy feedback to the user/pilot. <br>
+This is a modified version of the original ccny_ground_station.
 
-For more informations on this package, take a look at the wiki page : http://www.ros.org/wiki/ground_station<br>
-For more informations on the Gtk widgets, take a look at the API code.
+For more informations on this package, take a look at the wiki page:
+http://www.ros.org/wiki/ground_station <br>
+For more information on the Gtk widgets, take a look at the API code.
 */
