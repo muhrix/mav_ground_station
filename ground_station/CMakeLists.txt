@@ -67,19 +67,24 @@ rosbuild_add_executable(${FAKEPOSE}  ${FAKEPOSEN_SRC})
 pkg_check_modules(GTK      REQUIRED gtk+-2.0)
 pkg_check_modules(GMODULE  REQUIRED gmodule-2.0)
 pkg_check_modules(LIBGLADE REQUIRED libglade-2.0)
+pkg_check_modules(GTHREAD  REQUIRED gthread-2.0)
 
 include_directories(${GTK_INCLUDE_DIRS})
 include_directories(${GMODULE_INCLUDE_DIRS})
 include_directories(${LIBGLADE_INCLUDE_DIRS})
+include_directories(${GTHREAD_INCLUDE_DIRS})
 
 link_directories(${GTK_LIBRARY_DIRS})
 link_directories(${GMODULE_LIBRARY_DIRS})
 link_directories(${LIBGLADE_LIBRARY_DIRS})
+link_directories(${GTHREAD_LIBRARY_DIRS})
 
 target_link_libraries(${GROUNDSTATION} ${GTK_LIBRARIES})
 target_link_libraries(${GROUNDSTATION} ${GMODULE_LIBRARIES})
 target_link_libraries(${GROUNDSTATION} ${LIBGLADE_LIBRARIES})
+target_link_libraries(${GROUNDSTATION} ${GTHREAD_LIBRARIES})
 target_link_libraries(${GROUNDSTATION} libosmgpsmap.so)
 
 target_link_libraries(${TELEMETRY} ${GTK_LIBRARIES})
+target_link_libraries(${TELEMETRY} ${GTHREAD_LIBRARIES})
 
