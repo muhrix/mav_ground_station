@@ -2,7 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b gpsd_viewer is ... 
+\b gpsd_viewer is a ROS package which has been modified to work with ROS Fuerte on Ubuntu 12.04. 
 
 <!-- 
 Provide an overview of your package.
