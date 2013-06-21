@@ -1,18 +1,17 @@
 all: installed
 
-TARBALL = build/osm-gps-map-0.7.2.tar.gz
-TARBALL_URL = http://www.johnstowers.co.nz/files/osm-gps-map/osm-gps-map-0.7.2.tar.gz
-SOURCE_DIR = build/osm-gps-map-0.7.2
-UNPACK_CMD = tar xzf
-include $(shell rospack find mk)/download_unpack_build.mk
+GIT_DIR = build/osm-gps-map-git
+GIT_URL = https://github.com/muhrix/osm-gps-map.git
+GIT_REVISION = fuerte_precise
+include $(shell rospack find mk)/git_checkout.mk
 
-installed: $(SOURCE_DIR)/unpacked
-	cd $(SOURCE_DIR) && ./configure
-	cd $(SOURCE_DIR) && make
+installed: $(GIT_DIR)
+	cd $(GIT_DIR) && ./autogen.sh
+	cd $(GIT_DIR) && make
 	mkdir -p $(CURDIR)/lib
-	cp -r $(CURDIR)/$(SOURCE_DIR)/src/.libs/* $(CURDIR)/lib/
+	cp -r $(CURDIR)/$(GIT_DIR)/src/.libs/* $(CURDIR)/lib/
 	mkdir -p $(CURDIR)/include
-	cp -r $(CURDIR)/$(SOURCE_DIR)/src/*.h $(CURDIR)/include/
+	cp -r $(CURDIR)/$(GIT_DIR)/src/*.h $(CURDIR)/include/
 	touch installed
 
 clean:
