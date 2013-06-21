@@ -47,7 +47,7 @@ void imuCallback (const sensor_msgs::ImuConstPtr & imu)
   orientation.setY(imuData_.orientation.y);
   orientation.setZ(imuData_.orientation.z);
   orientation.setW(imuData_.orientation.w);
-  btMatrix3x3(orientation).getRPY(roll, pitch, yaw);
+  tf::Matrix3x3(orientation).getRPY(roll, pitch, yaw);
 
   ROS_DEBUG ("Yaw %f, Pitch %f, Roll %f, RollBis %f", RAD2DEG(yaw), RAD2DEG(pitch), RAD2DEG(roll),(double)(((int)(RAD2DEG(roll)*1000)+360000)%360000)/1000);
 
