@@ -5,4 +5,5 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/ground_station</url>
   <depend stack="ros" />
+  <depend stack="asctec_mav_framework" />
 </stack>
