@@ -17,7 +17,7 @@ ros-fuerte-gps-drivers
 ros-fuerte-gps-umd
 
 DISCLAIMER:
-I cannot guarantee there will not be any other dependency not met on systems other than mine.
+I cannot guarantee there will not be any other dependencies not met on systems other than mine.
 I have installed Ubuntu 12.04.1 and ROS Fuerte (ros-fuerte-desktop-full).
-I have also installed a handful of other packages, so please do pay attention to the output messages whislt running rosmake.
+I have also installed a handful of other packages, so please do pay attention to the output messages whilst running rosmake.
 
