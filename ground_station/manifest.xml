@@ -10,14 +10,16 @@
 
   <depend package="roscpp"/>
   <depend package="roslib"/>
+  <depend package="tf"/>
+  <depend package="std_msgs"/>
   <depend package="geometry_msgs"/>
   <depend package="sensor_msgs"/>
+  <depend package="asctec_hl_comm"/>
   <depend package="asctec_msgs"/>
+  <depend package="mav_msgs"/>
   <depend package="osmgpsmap"/>
   <depend package="rosbag"/>
-  <depend package="std_msgs"/>
   <depend package="gpsd_client"/>
-  <depend package="tf"/>
   <rosdep name="libgtk2.0-dev"/>
   <rosdep name="libglade2-dev"/>
   <rosdep name="libglib2.0-dev"/>

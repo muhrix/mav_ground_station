@@ -6,4 +6,5 @@
   <url>http://ros.org/wiki/ground_station</url>
   <depend stack="ros" />
   <depend stack="asctec_mav_framework" />
+  <depend stack="mav_tools" />
 </stack>
