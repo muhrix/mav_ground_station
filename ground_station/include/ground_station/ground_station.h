@@ -54,13 +54,18 @@
 #include <ros/package.h>
 #include <tf/transform_datatypes.h>
 #include <tf/transform_broadcaster.h>
+#include <sensor_msgs/Imu.h>
+#include <sensor_msgs/NavSatFix.h>
+#include <asctec_hl_comm/mav_imu.h>
+#include <asctec_hl_comm/mav_status.h>
+#include <asctec_hl_comm/mav_rcdata.h>
+#include <sensor_fusion_comm/ExtEkf.h>
 #include <asctec_msgs/GPSData.h>
 #include <asctec_msgs/IMUCalcData.h>
 #include <asctec_msgs/LLStatus.h>
-#include <asctec_msgs/Height.h>
+#include <mav_msgs/Height.h>
 #include <gps_common/GPSFix.h>
 #include <gps_common/GPSStatus.h>
-#include <sensor_msgs/Imu.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>

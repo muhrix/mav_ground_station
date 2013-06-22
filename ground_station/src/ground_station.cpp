@@ -220,17 +220,17 @@ void *startROS (void *user)
     ros::NodeHandle n_param ("~");
     XmlRpc::XmlRpcValue xml_marker_center;
 
-    ROS_INFO ("Starting CityFlyer Ground Station");
+    ROS_INFO ("Starting Ground Station");
 
     // -----------------------------------------------------------------   
     // **** General window parameters
     if (!n_param.getParam ("window_grayscale_color", data->grayscale_color))
       data->grayscale_color = false;
-    ROS_DEBUG ("\tWindow grayscale color: %d", data->grayscale_color);
+    ROS_DEBUG ("\tWindow greyscale colour: %d", data->grayscale_color);
 
     if (!n_param.getParam ("window_radial_color", data->radial_color))
       data->radial_color = true;
-    ROS_DEBUG ("\tWindow radial color: %d", data->radial_color);
+    ROS_DEBUG ("\tWindow radial colour: %d", data->radial_color);
     
     if (!n_param.getParam ("telemetry_refresh_rate", data->telemetry_refresh_rate))
       data->telemetry_refresh_rate = 200;
@@ -322,7 +322,7 @@ void *startROS (void *user)
     // **** wait to widget creation
     while (!data->widget_created)
     {
-      ROS_DEBUG ("Waiting widgets creation");
+      ROS_DEBUG ("Waiting for widgets creation");
     }
 
     // -----------------------------------------------------------------      
@@ -484,7 +484,7 @@ int main (int argc, char **argv)
 
   // **** Get main window pointer from UI
   data->window = GTK_WIDGET (gtk_builder_get_object (builder, "window1"));
-  gtk_window_set_title (GTK_WINDOW (data->window), "CityFlyer Ground Station");
+  gtk_window_set_title (GTK_WINDOW (data->window), "Ground Station");
   gtk_window_set_position (GTK_WINDOW (data->window), GTK_WIN_POS_CENTER);
   gtk_window_set_default_size (GTK_WINDOW (data->window), 1024, 576);
 
@@ -494,7 +494,7 @@ int main (int argc, char **argv)
   // **** wait ros finish read params
   while (!data->ros_param_read)
   {
-    ROS_DEBUG ("Waiting ROS params");
+    ROS_DEBUG ("Waiting for ROS params");
   }
 
   // **** Get GtkNotebook objsect
