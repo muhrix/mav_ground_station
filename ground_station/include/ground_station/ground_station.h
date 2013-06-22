@@ -1,5 +1,10 @@
 /*
- *  Ground Station for CityFlyer CCNY project
+ *  Ground Station for ROS Fuerte/Ubuntu Precise
+ *  Copyright (C) 2013, FEI University Centre
+ *  Murilo Fernandes Martins <muhrix@gmail.com>
+ *  http://www.fei.edu.br/~murilo
+ *
+ *  Originally implemented for CityFlyer CCNY project
  *  Copyright (C) 2010, CCNY Robotics Lab
  *  Gautier Dumonteil <gautier.dumonteil@gmail.com>
  *  http://robotics.ccny.cuny.edu
@@ -20,14 +25,15 @@
 
 /**
  * @file ground_station.h 
- * @brief Program that link ROS with Gtk
+ * @brief Gtk GUI which subscribes to ROS topics and displays telemetry data
  * @author Gautier Dumonteil <gautier.dumonteil@gmail.com>
- * @version 0.1
- * @date 06/06/2010
+ * @author Murilo Fernandes Martins <muhrix@gmail.com>
+ * @version 0.2
+ * @date 22/06/2013
  *
- * Ground Station for CityFlyer CCNY project
+ * Ground Station for ROS Fuerte/Ubuntu Precise
+ * Copyright (C) 2013, FEI University Centre
  * Copyright (C) 2010, CCNY Robotics Lab
- * http://robotics.ccny.cuny.edu
  *  
  */
 
