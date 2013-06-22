@@ -1,8 +1,9 @@
-ccny_ground_station
+mav_ground_station
 ===================
 
-My own port of the ROS ground_station stack originally implemented by the folks from CCNY, forked from ccny-ros-pkg-pbouffard.
-It is a work in progress to get it working with ROS Fuerte on Ubuntu 12.04 (Precise).
+My own port of the ROS ccny_ground_station stack originally implemented by the folks from CCNY, forked from ccny-ros-pkg-pbouffard.
+It is a work in progress to get it working with ROS Fuerte on Ubuntu 12.04 (Precise), subscribing to topics published by asctec_mav_framework, rather than asctec_drivers.
+
 In order for the stack (i.e., the 3 packages within it) to compile, some system dependencies must be already installed.
 The list of packages one should install (e.g., using apt-get install) are:
 gnome-common
