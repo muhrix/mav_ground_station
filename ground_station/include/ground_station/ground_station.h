@@ -80,10 +80,10 @@
 #include <ground_station/gui/gtkartificialhorizon.h>
 #include <ground_station/gui/gpsd_viewer_osd.h>
 
-const std::string imuTopic = "/asctec_proc/imu";
+const std::string imuTopic = "imu/data";
 const std::string heightTopic = "/asctec_proc/pressure_height";
 const std::string imuCalcDataTopic = "/autopilot/IMU_CALCDATA";
-const std::string gpsDataTopic = "/autopilot/GPS_DATA";
+//const std::string gpsDataTopic = "/autopilot/GPS_DATA";
 const std::string llStatusTopic = "/autopilot/LL_STATUS";
 
 #define RAD2DEG(RAD) ((RAD)*((180.)/(M_PI)))
@@ -93,29 +93,28 @@ const std::string llStatusTopic = "/autopilot/LL_STATUS";
  * @brief Allow to pass the arguments of the program to a pthread.<br>
  * Allow to use ROS params even ROS is in a child thread of Gtk.
  */
-struct arg
-{
-  int argc;
-  char **argv;
+struct arg {
+	int argc;
+	char **argv;
 };
 
 ros::Subscriber imuSub;
 ros::Subscriber heightSub;
 ros::Subscriber imuCalcDataSub;
-ros::Subscriber gpsDataSub;
+//ros::Subscriber gpsDataSub;
 ros::Subscriber llStatusSub;
 ros::Subscriber gpsFixSub;
 
 sensor_msgs::Imu imuData_;
-asctec_msgs::Height heightData_;
+mav_msgs::Height heightData_;
 asctec_msgs::IMUCalcData imuCalcData_;
-asctec_msgs::GPSData gpsData_;
+//asctec_msgs::GPSData gpsData_;
 asctec_msgs::LLStatus llStatus_;
 
-void *startROS (void *);
-void imuCalcDataCallback (const asctec_msgs::IMUCalcDataConstPtr &);
-void gpsDataCallback (const asctec_msgs::GPSDataConstPtr &);
-void llStatusCallback (const asctec_msgs::LLStatusConstPtr &);
-gboolean widgets_update (gpointer dat);
+void *startROS(void *);
+void imuCalcDataCallback(const asctec_msgs::IMUCalcDataConstPtr &);
+//void gpsDataCallback (const asctec_msgs::GPSDataConstPtr &);
+void llStatusCallback(const asctec_msgs::LLStatusConstPtr &);
+gboolean widgets_update(gpointer dat);
 
 #endif
