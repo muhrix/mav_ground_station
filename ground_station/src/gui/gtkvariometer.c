@@ -776,7 +776,7 @@ static void gtk_variometer_draw_base (GtkWidget * vario,  cairo_t * cr)
       if (priv->unit_is_feet)
         cairo_show_text (cr, "100 FEET PER MIN");
       else
-        cairo_show_text (cr, "100 METER PER MIN");
+        cairo_show_text (cr, "100 METRES PER MIN");
       break;
       cairo_stroke (cr);
     case 1000:
@@ -784,7 +784,7 @@ static void gtk_variometer_draw_base (GtkWidget * vario,  cairo_t * cr)
       if (priv->unit_is_feet)
         cairo_show_text (cr, "1000 FEET PER MIN");
       else
-        cairo_show_text (cr, "1000 METER PER MIN");
+        cairo_show_text (cr, "1000 METRES PER MIN");
       cairo_stroke (cr);
       break;
   }

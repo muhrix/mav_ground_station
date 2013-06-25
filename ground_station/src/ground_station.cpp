@@ -441,7 +441,7 @@ int main(int argc, char **argv) {
 	char glade_gui_file[FILENAME_MAX];
 	int start_zoom = 15;
 	char *mapcachedir;
-	OsmGpsMapPoint ccny_coord = { 40.818551, -73.948674 };
+	OsmGpsMapPoint fei_coord = { -23.725377, -46.582015 };
 
 	struct arg param;
 	param.argc = argc;
@@ -607,7 +607,7 @@ int main(int argc, char **argv) {
 
 	//Set the starting coordinates and zoom level for the map
 	osm_gps_map_set_zoom(data->map, start_zoom);
-	osm_gps_map_set_center(data->map, ccny_coord.rlat, ccny_coord.rlon);
+	osm_gps_map_set_center(data->map, fei_coord.rlat, fei_coord.rlon);
 
 	data->osd = gpsd_viewer_osd_new();
 	g_object_set(GPSD_VIEWER_OSD (data->osd), "show-scale", true,

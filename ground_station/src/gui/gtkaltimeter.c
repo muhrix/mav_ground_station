@@ -221,14 +221,14 @@ static void gtk_altimeter_class_init (GtkAltimeterClass * klass)
   g_object_class_install_property (obj_class,
                                    PROP_GRAYSCALE_COLOR,
                                    g_param_spec_boolean ("grayscale-color",
-                                                         "use grayscale for the widget color",
-                                                         "use grayscale for the widget color", FALSE,
+                                                         "use greyscale for the widget colour",
+                                                         "use greyscale for the widget colour", FALSE,
                                                          G_PARAM_WRITABLE));
   g_object_class_install_property (obj_class,
                                    PROP_UNIT_IS_FEET,
                                    g_param_spec_boolean ("unit-is-feet",
-                                                         "set the altimeter unit to feet or meter",
-                                                         "set the altimeter unit to feet or meter",
+                                                         "set the altimeter unit to feet or metre",
+                                                         "set the altimeter unit to feet or metre",
                                                          TRUE, G_PARAM_WRITABLE));
   g_object_class_install_property (obj_class,
                                    PROP_UNIT_STEP_VALUE,
@@ -239,8 +239,8 @@ static void gtk_altimeter_class_init (GtkAltimeterClass * klass)
   g_object_class_install_property (obj_class,
                                    PROP_RADIAL_COLOR,
                                    g_param_spec_boolean ("radial-color",
-                                                         "the widget use radial color",
-                                                         "the widget use radial color", TRUE, G_PARAM_WRITABLE));
+                                                         "the widget use radial colour",
+                                                         "the widget use radial colour", TRUE, G_PARAM_WRITABLE));
   return;
 }
 
@@ -272,7 +272,7 @@ static void gtk_altimeter_init (GtkAltimeter * alt)
   priv->draw_once = FALSE;
   priv->grayscale_color = FALSE;
   priv->radial_color = TRUE;
-  priv->unit_is_feet = TRUE;
+  priv->unit_is_feet = FALSE;
   priv->altitude = 0;
   priv->unit_value = 100;
 
@@ -767,7 +767,7 @@ static void gtk_altimeter_draw_base (GtkWidget * alt, cairo_t * cr)
     cairo_set_font_size (cr, 0.07 * radius);
     cairo_move_to (cr, x + 0.145 * radius, y - 0.85 * radius);
     cairo_rotate (cr, M_PI / 10);
-    cairo_show_text (cr, "METER");
+    cairo_show_text (cr, "METRES");
     cairo_stroke (cr);
     cairo_restore (cr);
   }
