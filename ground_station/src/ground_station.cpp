@@ -45,7 +45,10 @@ AppData *data;
 
 // asctec_mav_framework-related callback function implementations
 void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr& imu) {
-	// check details of units at:
+	// Details of units used with this message can found in the source of the implementation at:
+	// http://ros.org/rosdoclite/groovy/api/asctec_hl_comm/html/HL__interface_8h.html
+	// http://ros.org/rosdoclite/groovy/api/asctec_hl_comm/html/HL__interface_8h_source.html
+	// http://ros.org/rosdoclite/groovy/api/asctec_hl_interface/html/hl__interface_8cpp_source.html
 	// http://ros.org/rosdoclite/groovy/api/asctec_hl_comm/html/HL__interface_8h.html
 
 	// **** get GTK thread lock
@@ -119,9 +122,9 @@ void fcuGpsCallback(const sensor_msgs::NavSatFixConstPtr& gps) {
 
 void fcuStatusCallback(const asctec_hl_comm::mav_statusConstPtr& status) {
 	// Details of this message can found in the source of the implementation at:
-	// http://ros.org/rosdoclite/groovy/api/asctec_hl_interface/html/hl__interface_8cpp_source.html
-	// and also at:
 	// http://ros.org/rosdoclite/groovy/api/asctec_hl_comm/html/HL__interface_8h.html
+	// http://ros.org/rosdoclite/groovy/api/asctec_hl_comm/html/HL__interface_8h_source.html
+	// http://ros.org/rosdoclite/groovy/api/asctec_hl_interface/html/hl__interface_8cpp_source.html
 
 	std::ostringstream label;
 	int min, sec;

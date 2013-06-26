@@ -32,26 +32,26 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 include($ENV{ROS_ROOT}/core/rosbuild/FindPkgConfig.cmake)
 
 set(TELEMETRY telemetry_demo)
-set(TELEMETRY_SRC src/gui/gtkaltimeter.c
-						src/gui/gtkvariometer.c
-						src/gui/gtkcompass.c
-						src/gui/gtkgauge.c	
-						src/gui/gtkbargauge.c	
-						src/gui/gtkartificialhorizon.c	
-						src/gui/gtkturncoordinator.c																							
+set(TELEMETRY_SRC src/gui/gtkaltimeter.cpp
+						src/gui/gtkvariometer.cpp
+						src/gui/gtkcompass.cpp
+						src/gui/gtkgauge.cpp	
+						src/gui/gtkbargauge.cpp	
+						src/gui/gtkartificialhorizon.cpp	
+						src/gui/gtkturncoordinator.cpp																							
 						src/gui/telemetry_widgets_appdata.cpp
 						src/telemetry_widgets.cpp)
 rosbuild_add_executable(${TELEMETRY}  ${TELEMETRY_SRC})
 
 set(GROUNDSTATION groundstation)
-set(GROUNDSTATION_SRC   src/gui/gtkaltimeter.c
-								src/gui/gtkvariometer.c
-								src/gui/gtkcompass.c
-								src/gui/gtkgauge.c	
-								src/gui/gtkbargauge.c	
-								src/gui/gtkartificialhorizon.c	
-								src/gui/gtkturncoordinator.c																							
-								src/gui/gpsd_viewer_osd.c																							
+set(GROUNDSTATION_SRC   src/gui/gtkaltimeter.cpp
+								src/gui/gtkvariometer.cpp
+								src/gui/gtkcompass.cpp
+								src/gui/gtkgauge.cpp	
+								src/gui/gtkbargauge.cpp	
+								src/gui/gtkartificialhorizon.cpp	
+								src/gui/gtkturncoordinator.cpp																							
+								src/gui/gpsd_viewer_osd.cpp																							
 								src/gui/ground_station_appdata.cpp		
 								src/gui/ground_station_callbacks.cpp						
 								src/ground_station.cpp)

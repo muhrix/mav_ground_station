@@ -87,6 +87,7 @@
 #include <math.h>
 #include <time.h>
 #include <sys/time.h>
+#include <ros/ros.h>
 
 #define GTK_VARIOMETER_MAX_STRING  256   /* Size of a text string */
 
