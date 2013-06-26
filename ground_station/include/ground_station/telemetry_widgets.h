@@ -53,8 +53,9 @@
 
 #include <ros/ros.h>
 #include <ros/package.h>
-#include <geometry_msgs/Pose.h>
-#include <sensor_msgs/Imu.h>
+#include <tf/transform_datatypes.h>
+#include <asctec_hl_comm/mav_imu.h>
+//#include <sensor_msgs/Imu.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -68,7 +69,9 @@
 #include <ground_station/gui/gtkturncoordinator.h>
 #include <ground_station/gui/gtkartificialhorizon.h>
 
-const std::string imuTopic = "/imu";
+#define RAD2DEG(RAD) ((RAD)*((180.)/(M_PI)))
+
+//const std::string imuTopic = "/imu";
 
 /**
  * @struct arg
@@ -81,10 +84,10 @@ struct arg
   char **argv;
 };
 
-sensor_msgs::Imu imuData_;
+//sensor_msgs::Imu imuData_;
 
 void *startROS (void *);
-void updateAltitudeCallback (const geometry_msgs::PoseConstPtr &);
+void updateWidgetsCallback (const asctec_hl_comm::mav_imuConstPtr&);
 gboolean window_update (gpointer dat);
 
 #endif
