@@ -51,7 +51,7 @@ set(GROUNDSTATION_SRC   src/gui/gtkaltimeter.cpp
 								src/gui/gtkbargauge.cpp	
 								src/gui/gtkartificialhorizon.cpp	
 								src/gui/gtkturncoordinator.cpp																							
-								src/gui/gpsd_viewer_osd.cpp																							
+								src/gui/gpsd_viewer_osd.c																							
 								src/gui/ground_station_appdata.cpp		
 								src/gui/ground_station_callbacks.cpp						
 								src/ground_station.cpp)

@@ -269,7 +269,7 @@ static void gtk_variometer_init (GtkVariometer * vario)
   priv->draw_once = FALSE;
   priv->grayscale_color = FALSE;
   priv->radial_color = TRUE;
-  priv->unit_value = 100;
+  priv->unit_value = 10;
   priv->dheight = 0;
 
   priv->bg_color_bounderie.red = 6553.5;        // 0.1 cairo
