@@ -45,6 +45,9 @@ AppData *data;
 
 // asctec_mav_framework-related callback function implementations
 void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr& imu) {
+	// check details of units at:
+	// http://ros.org/rosdoclite/groovy/api/asctec_hl_comm/html/HL__interface_8h.html
+
 	// **** get GTK thread lock
 	gdk_threads_enter();
 	//fcuImuCustomData_ = (*imu);
@@ -57,21 +60,24 @@ void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr& imu) {
 	orientation.setW(imu->orientation.w);
 	tf::Matrix3x3(orientation).getRPY(roll, pitch, yaw);
 
-	ROS_DEBUG("Yaw %f, Pitch %f, Roll %f, RollBis %f", RAD2DEG(yaw),
-			RAD2DEG(pitch), RAD2DEG(roll), (double)(((int)(RAD2DEG(roll)*1000)+360000)%360000)/1000);
-	ROS_DEBUG("Current altitude: %f metres", imu->height);
-	ROS_DEBUG("Altitude variation: %f metres/sec", imu->differential_height);
+	ROS_DEBUG_STREAM("Yaw: " << RAD2DEG(yaw) << "\tPitch: " << RAD2DEG(pitch) << "\tRoll: "
+			<< RAD2DEG(roll) << "\tRollBis: " << (double)(((int)(RAD2DEG(roll)*1000)+360000)%360000)/1000);
+	ROS_DEBUG_STREAM("Current altitude: " << imu->height << " metres");
+	ROS_DEBUG_STREAM("Altitude variation: " << imu->differential_height << " metres/sec");
 
 	if (IS_GTK_ARTIFICIAL_HORIZON (data->arh))
 		gtk_artificial_horizon_set_value(GTK_ARTIFICIAL_HORIZON (data->arh),
 				(double) (((int) (RAD2DEG(roll) * 1000) + 360000) % 360000) / 1000, (double) -RAD2DEG(pitch));
 
+	// height [mm]
 	if (IS_GTK_ALTIMETER (data->alt))
-		gtk_altimeter_set_alti(GTK_ALTIMETER (data->alt), imu->height);
+		gtk_altimeter_set_alti(GTK_ALTIMETER (data->alt), imu->height * 1000.);
 
+	// differential_height [mm/s]
 	if (IS_GTK_VARIOMETER (data->vario))
-		gtk_variometer_set_value(GTK_VARIOMETER (data->vario), imu->differential_height);
+		gtk_variometer_set_value(GTK_VARIOMETER (data->vario), imu->differential_height * 1000.);
 
+	// yaw from 0...360 [deg*100]
 	if (IS_GTK_COMPASS (data->comp2))
 		gtk_compass_set_angle(GTK_COMPASS (data->comp2),
 				(double) (((int) (RAD2DEG(yaw) * 1000) + 360000) % 360000) / 1000);
@@ -106,6 +112,68 @@ void fcuGpsCallback(const sensor_msgs::NavSatFixConstPtr& gps) {
 		// **** Add point to the track
 		osm_gps_map_track_add_point(data->uav_track, point);
 	}
+
+	// **** release GTK thread lock
+	gdk_threads_leave();
+}
+
+void fcuStatusCallback(const asctec_hl_comm::mav_statusConstPtr& status) {
+	// Details of this message can found in the source of the implementation at:
+	// http://ros.org/rosdoclite/groovy/api/asctec_hl_interface/html/hl__interface_8cpp_source.html
+	// and also at:
+	// http://ros.org/rosdoclite/groovy/api/asctec_hl_comm/html/HL__interface_8h.html
+
+	std::ostringstream label;
+	int min, sec;
+
+	// **** get GTK thread lock
+	gdk_threads_enter();
+
+	// **** update gauge1: battery voltage [mV]
+	if (IS_GTK_GAUGE (data->gauge1))
+		gtk_gauge_set_value(GTK_GAUGE (data->gauge1), status->battery_voltage * 1000.);
+
+	gtk_label_set_text(GTK_LABEL (data->flightMode_label), status->flight_mode_ll.c_str());
+	// flight time [s]
+	// format time to 00:00 (min:sec)
+	min = (int)status->flight_time / 60;
+	sec = (int)status->flight_time % 60;
+	if (min < 10)
+		label << "0" << min << ":";
+	else
+		label << min << ":";
+	if (sec < 10)
+		label << "0" << sec;
+	else
+		label << sec;
+	gtk_label_set_text(GTK_LABEL (data->upTime_label), label.str().c_str());
+	// remember to empty ostringstream
+	label.str("");
+	label << status->cpu_load << "%";
+	gtk_label_set_text(GTK_LABEL (data->cpuLoad_label), label.str().c_str());
+
+
+
+	/*if(llStatus_.flying==0)
+	 {
+	 gtk_container_remove(GTK_CONTAINER(data->box_Flying),GTK_WIDGET (data->status_ok_icon_flying));
+	 gtk_box_pack_end (GTK_BOX (data->box_Flying),data->status_fail_icon_flying, TRUE, TRUE, 0);
+	 }
+	 else
+	 {
+	 gtk_container_remove(GTK_CONTAINER(data->box_Flying),GTK_WIDGET (data->status_fail_icon_flying));
+	 gtk_box_pack_end (GTK_BOX (data->box_Flying),data->status_ok_icon_flying, TRUE, TRUE, 0);
+	 }
+	 if(llStatus_.motors_on==0)
+	 {
+	 gtk_container_remove(GTK_CONTAINER(data->box_MotorStatus),GTK_WIDGET (data->status_ok_icon_motor));
+	 gtk_box_pack_end (GTK_BOX (data->box_MotorStatus),data->status_fail_icon_motor, TRUE, TRUE, 0);
+	 }
+	 else
+	 {
+	 gtk_container_remove(GTK_CONTAINER(data->box_MotorStatus),GTK_WIDGET (data->status_fail_icon_motor));
+	 gtk_box_pack_end (GTK_BOX (data->box_MotorStatus),data->status_ok_icon_motor, TRUE, TRUE, 0);
+	 } */
 
 	// **** release GTK thread lock
 	gdk_threads_leave();

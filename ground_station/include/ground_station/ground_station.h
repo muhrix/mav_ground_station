@@ -50,6 +50,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <sstream>
+
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <tf/transform_datatypes.h>
