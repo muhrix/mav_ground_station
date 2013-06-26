@@ -80,7 +80,36 @@ void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr& imu) {
 	gdk_threads_leave();
 }
 
+void fcuGpsCallback(const sensor_msgs::NavSatFixConstPtr& gps) {
+	// **** get GTK thread lock
+	gdk_threads_enter();
+	//fcuGpsData_ = (*gps);
 
+	gint pixel_x, pixel_y;
+
+	ROS_DEBUG_STREAM("GPS coordinates: " << gps->latitude << ", " << gps->longitude);
+	ROS_DEBUG_STREAM("GPS altitude information: " << gps->altitude);
+
+	OsmGpsMapPoint *point = osm_gps_map_point_new_degrees(gps->latitude, gps->longitude);
+	osm_gps_map_convert_geographic_to_screen(data->map, point, &pixel_x, &pixel_y);
+
+	if (OSM_IS_GPS_MAP (data->map)) {
+		// **** Centre map on GPS data received
+		if (data->lock_view) {
+			update_uav_pose_osd(data->osd, TRUE, pixel_x, pixel_y);
+			osm_gps_map_set_center(data->map, gps->latitude, gps->longitude);
+		}
+		else {
+			update_uav_pose_osd(data->osd, FALSE, pixel_x, pixel_y);
+			osm_gps_map_gps_clear(data->map);
+		}
+		// **** Add point to the track
+		osm_gps_map_track_add_point(data->uav_track, point);
+	}
+
+	// **** release GTK thread lock
+	gdk_threads_leave();
+}
 
 
 
