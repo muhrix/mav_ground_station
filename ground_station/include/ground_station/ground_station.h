@@ -129,6 +129,12 @@ asctec_msgs::IMUCalcData imuCalcData_;
 asctec_msgs::LLStatus llStatus_;
 
 void *startROS(void *);
+// asctec_mav_framework-related ROS callback functions
+void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr&);
+void fcuGpsCallback(const sensor_msgs::NavSatFixConstPtr&);
+void fcuStatusCallback(const asctec_hl_comm::mav_statusConstPtr&);
+
+// legacy asctec_autopilot-related ROS callback functions
 void imuCalcDataCallback(const asctec_msgs::IMUCalcDataConstPtr &);
 //void gpsDataCallback (const asctec_msgs::GPSDataConstPtr &);
 void llStatusCallback(const asctec_msgs::LLStatusConstPtr &);
