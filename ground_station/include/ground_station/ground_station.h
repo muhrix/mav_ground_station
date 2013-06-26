@@ -80,6 +80,11 @@
 #include <ground_station/gui/gtkartificialhorizon.h>
 #include <ground_station/gui/gpsd_viewer_osd.h>
 
+// asctec_mav_framework-related ROS topics
+const std::string fcuImuCustomTopic = "imu_custom";
+const std::string fcuGpsTopic = "gps";
+const std::string fcuStatusTopic = "status";
+// legacy asctec_autopilot-related ROS topics
 const std::string imuTopic = "imu/data";
 const std::string heightTopic = "/asctec_proc/pressure_height";
 const std::string imuCalcDataTopic = "/autopilot/IMU_CALCDATA";
@@ -98,6 +103,12 @@ struct arg {
 	char **argv;
 };
 
+// asctec_mav_framework-related subscribers
+ros::Subscriber fcuImuCustomSub;
+ros::Subscriber fcuGpsSub;
+ros::Subscriber fcuStatusSub;
+
+// legacy asctec_autopilot-related ROS subscribers
 ros::Subscriber imuSub;
 ros::Subscriber heightSub;
 ros::Subscriber imuCalcDataSub;
@@ -105,6 +116,12 @@ ros::Subscriber imuCalcDataSub;
 ros::Subscriber llStatusSub;
 ros::Subscriber gpsFixSub;
 
+// asctec_mav_framework-related ROS messages
+asctec_hl_comm::mav_imu fcuImgCustomData_;
+sensor_msgs::NavSatFix fcuGpsData_;
+asctec_hl_comm::mav_status fcuStatusData_;
+
+// legacy asctec_autopilot-related ROS messages
 sensor_msgs::Imu imuData_;
 mav_msgs::Height heightData_;
 asctec_msgs::IMUCalcData imuCalcData_;

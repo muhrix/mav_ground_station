@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
 	<node name="ground_station" pkg="ground_station" type="groundstation" respawn="false" output="screen">
 	

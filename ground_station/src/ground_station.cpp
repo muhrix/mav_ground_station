@@ -492,7 +492,7 @@ int main(int argc, char **argv) {
 	// **** create ROS thread
 	pthread_create(&rosThread, NULL, startROS, &param);
 
-	// **** wait ros finish read params
+	// **** wait for ros to finish reading params
 	while (!data->ros_param_read) {
 		ROS_DEBUG("Waiting for ROS params");
 	}
@@ -504,7 +504,7 @@ int main(int argc, char **argv) {
 	// #####################################################################
 	// **** Tab 1: Telemetry
 
-	// **** create altimeter widgets
+	// **** create altimeter widget
 	data->alt = gtk_altimeter_new();
 	g_object_set(GTK_ALTIMETER (data->alt), "grayscale-color",
 			data->grayscale_color, "unit-is-feet", data->altimeter_unit_is_feet,
@@ -533,12 +533,12 @@ int main(int argc, char **argv) {
 			data->gauge1_yellow_strip_start, "red-strip-start",
 			data->gauge1_red_strip_start, NULL);
 
-	// **** create artificial horizon widgets
+	// **** create artificial horizon widget
 	data->arh = gtk_artificial_horizon_new();
 	g_object_set(GTK_ARTIFICIAL_HORIZON (data->arh), "grayscale-color",
 			data->grayscale_color, "radial-color", data->radial_color, NULL);
 
-	// **** create variometer widgets
+	// **** create variometer widget
 	data->vario = gtk_variometer_new();
 	g_object_set(GTK_VARIOMETER (data->vario), "grayscale-color",
 			data->grayscale_color, "unit-is-feet",
@@ -548,18 +548,12 @@ int main(int argc, char **argv) {
 
 	data->widget_table =
 			GTK_WIDGET (gtk_builder_get_object (builder, "table_Widgets"));
-	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->alt, 0, 1,
-			0, 1);
-	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->arh, 1, 2,
-			0, 1);
-	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->comp, 2, 3,
-			0, 1);
-	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->vario, 0, 1,
-			1, 2);
-	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->comp2, 1, 2,
-			1, 2);
-	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->gauge1, 2,
-			3, 1, 2);
+	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->alt,    0, 1,  0, 1);
+	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->arh,    1, 2,  0, 1);
+	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->comp,   2, 3,  0, 1);
+	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->vario,  0, 1,  1, 2);
+	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->gauge1, 1, 2,  1, 2);
+	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->comp2,  2, 3,  1, 2);
 
 	gtk_widget_modify_bg(data->alt, GTK_STATE_NORMAL, &black);
 	gtk_widget_modify_bg(data->comp, GTK_STATE_NORMAL, &black);
