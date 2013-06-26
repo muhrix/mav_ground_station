@@ -1,5 +1,10 @@
 /*
- *  Ground Station for CityFlyer CCNY project
+ *  Ground Station for ROS Fuerte/Ubuntu Precise
+ *  Copyright (C) 2013, FEI University Centre
+ *  Murilo Fernandes Martins <muhrix@gmail.com>
+ *  http://www.fei.edu.br/~murilo
+ *
+ *  Originally implemented for CityFlyer CCNY project
  *  Copyright (C) 2010, CCNY Robotics Lab
  *  Gautier Dumonteil <gautier.dumonteil@gmail.com>
  *  http://robotics.ccny.cuny.edu

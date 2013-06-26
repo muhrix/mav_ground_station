@@ -212,10 +212,10 @@ void *startROS(void *user) {
 		ros::init(p_arg->argc, p_arg->argv, "ground_station");
 		ros::NodeHandle n;
 
-		std::string local_path;
-		std::string package_path = ros::package::getPath(ROS_PACKAGE_NAME);
+		//std::string local_path;
+		//std::string package_path = ros::package::getPath(ROS_PACKAGE_NAME);
 		ros::NodeHandle n_param("~");
-		XmlRpc::XmlRpcValue xml_marker_center;
+		//XmlRpc::XmlRpcValue xml_marker_center;
 
 		ROS_INFO("Starting Ground Station");
 
@@ -262,8 +262,7 @@ void *startROS(void *user) {
 
 		// -----------------------------------------------------------------
 		// **** Gauge1 parameters
-		std::string gauge1_name, gauge1_unit, gauge1_color_strip,
-				gauge1_sub_step;
+		std::string gauge1_name, gauge1_unit, gauge1_color_strip; //, gauge1_sub_step;
 
 		n_param.param("gauge1_name", gauge1_name, std::string("Gauge 1"));
 		n_param.param("gauge1_unit", gauge1_unit, std::string("(unit)"));
@@ -290,6 +289,7 @@ void *startROS(void *user) {
 		 * To avoid wasting time, I use a string.
 		 * (string)3_45 = (double)3.45
 		 */
+		/*
 		if (!n_param.getParam("gauge1_sub_step", gauge1_sub_step)) {
 			data->gauge1_sub_step = 2;
 		} else {
@@ -303,6 +303,11 @@ void *startROS(void *user) {
 				data->gauge1_sub_step = 0; // **** Will cause a Gtk warning on the gauge
 			}
 		}
+		*/
+
+		// In ROS Fuerte it is possible to pass a double as a parameter in the launch file
+		if (!n_param.getParam("gauge1_sub_step", data->gauge1_sub_step))
+			data->gauge1_sub_step = 2.0;
 
 		if (!n_param.getParam("gauge1_drawing_step", data->gauge1_drawing_step))
 			data->gauge1_drawing_step = 10;
@@ -579,7 +584,7 @@ int main(int argc, char **argv) {
 
 	// #####################################################################
 	// #####################################################################
-	// **** Tab 2: Gps
+	// **** Tab 2: GPS
 
 	// Some GpsdViewer initialisation
 	data->draw_path = false;
@@ -635,7 +640,7 @@ int main(int argc, char **argv) {
 
 	// #####################################################################
 	// #####################################################################
-	// **** Tab 3: Rec
+	// **** Tab 3: Logging
 
 	data->recording = 0;
 	data->rosbag_record_cmd = "rosbag record";

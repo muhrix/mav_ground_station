@@ -138,6 +138,7 @@ void fcuStatusCallback(const asctec_hl_comm::mav_statusConstPtr&);
 void imuCalcDataCallback(const asctec_msgs::IMUCalcDataConstPtr &);
 //void gpsDataCallback (const asctec_msgs::GPSDataConstPtr &);
 void llStatusCallback(const asctec_msgs::LLStatusConstPtr &);
+
 gboolean widgets_update(gpointer dat);
 
 #endif
