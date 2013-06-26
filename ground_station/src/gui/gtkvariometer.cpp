@@ -777,8 +777,8 @@ static void gtk_variometer_draw_base (GtkWidget * vario,  cairo_t * cr)
         cairo_show_text (cr, "10 FEET PER SEC");
       else
         cairo_show_text (cr, "10 METRES PER SEC");
-      break;
       cairo_stroke (cr);
+      break;
     case 100:
       cairo_move_to (cr, x - 0.35 * radius, y + 0.4 * radius);
       if (priv->unit_is_feet)
