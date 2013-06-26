@@ -41,6 +41,50 @@
 
 AppData *data;
 
+
+
+// asctec_mav_framework-related callback function implementations
+void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr& imu) {
+	// **** get GTK thread lock
+	gdk_threads_enter();
+	//fcuImuCustomData_ = (*imu);
+
+	double roll, pitch, yaw;
+	tf::Quaternion orientation;
+	orientation.setX(imu->orientation.x);
+	orientation.setY(imu->orientation.y);
+	orientation.setZ(imu->orientation.z);
+	orientation.setW(imu->orientation.w);
+	tf::Matrix3x3(orientation).getRPY(roll, pitch, yaw);
+
+	ROS_DEBUG("Yaw %f, Pitch %f, Roll %f, RollBis %f", RAD2DEG(yaw),
+			RAD2DEG(pitch), RAD2DEG(roll), (double)(((int)(RAD2DEG(roll)*1000)+360000)%360000)/1000);
+	ROS_DEBUG("Current altitude: %f metres", imu->height);
+	ROS_DEBUG("Altitude variation: %f metres/sec", imu->differential_height);
+
+	if (IS_GTK_ARTIFICIAL_HORIZON (data->arh))
+		gtk_artificial_horizon_set_value(GTK_ARTIFICIAL_HORIZON (data->arh),
+				(double) (((int) (RAD2DEG(roll) * 1000) + 360000) % 360000) / 1000, (double) -RAD2DEG(pitch));
+
+	if (IS_GTK_ALTIMETER (data->alt))
+		gtk_altimeter_set_alti(GTK_ALTIMETER (data->alt), imu->height);
+
+	if (IS_GTK_VARIOMETER (data->vario))
+		gtk_variometer_set_value(GTK_VARIOMETER (data->vario), imu->differential_height);
+
+	if (IS_GTK_COMPASS (data->comp2))
+		gtk_compass_set_angle(GTK_COMPASS (data->comp2),
+				(double) (((int) (RAD2DEG(yaw) * 1000) + 360000) % 360000) / 1000);
+
+	// **** release GTK thread lock
+	gdk_threads_leave();
+}
+
+
+
+
+
+// legacy asctec_autopilot-related callback function implementations
 void imuCallback(const sensor_msgs::ImuConstPtr & imu) {
 	// **** get GTK thread lock
 	gdk_threads_enter();
@@ -106,8 +150,7 @@ void heightCallback(const mav_msgs::HeightConstPtr & height) {
 	gdk_threads_enter();
 	heightData_ = (*height);
 
-	ROS_DEBUG(
-			"Climb %fm/s %fm/min\n", heightData_.climb, heightData_.climb*3600);
+	ROS_DEBUG("Climb %fm/s %fm/min\n", heightData_.climb, heightData_.climb*3600);
 
 	if (IS_GTK_ALTIMETER (data->alt))
 		gtk_altimeter_set_alti(GTK_ALTIMETER (data->alt),
@@ -195,14 +238,16 @@ void llStatusCallback(const asctec_msgs::LLStatusConstPtr & dat) {
 	gdk_threads_leave();
 }
 
+
+
 /**
  * @fn void *startROS (void *user)
  * @brief ROS thread.
  * 
- * The main program wait until "ros_param_read" in order to allow the <br>
- * ROS params to be also the Gtk Window and Widgets params.
- * Then the ROS thread wait to the widgets creation before subcribing<br>
- * to any topics, avoid to call public widget function for a widget not<br>
+ * The main program waits until "ros_param_read" is True in order to allow<br>
+ * for the ROS params to also be the Gtk Window and Widgets params.<br>
+ * Then, the ROS thread waits for the widgets creation before subscribing<br>
+ * to any topics to avoid calling public widget functions of a widget not<br>
  * yet created.
  */
 void *startROS(void *user) {
@@ -266,8 +311,7 @@ void *startROS(void *user) {
 
 		n_param.param("gauge1_name", gauge1_name, std::string("Gauge 1"));
 		n_param.param("gauge1_unit", gauge1_unit, std::string("(unit)"));
-		sprintf(data->gauge1_name_f,
-				"<big>%s</big>\n<span foreground=\"orange\"><i>(%s)</i></span>",
+		sprintf(data->gauge1_name_f, "<big>%s</big>\n<span foreground=\"orange\"><i>(%s)</i></span>",
 				gauge1_name.c_str(), gauge1_unit.c_str());
 		ROS_DEBUG("\tGauge 1 name : %s", data->gauge1_name_f);
 
@@ -281,8 +325,7 @@ void *startROS(void *user) {
 
 		if (!n_param.getParam("gauge1_initial_step", data->gauge1_initial_step))
 			data->gauge1_initial_step = 10;
-		ROS_DEBUG(
-				"\tGauge 1 initial step value: %d", data->gauge1_initial_step);
+		ROS_DEBUG("\tGauge 1 initial step value: %d", data->gauge1_initial_step);
 
 		/*
 		 * Can't figure out why I can't use a double in a ROS launch file
@@ -308,23 +351,18 @@ void *startROS(void *user) {
 		// In ROS Fuerte it is possible to pass a double as a parameter in the launch file
 		if (!n_param.getParam("gauge1_sub_step", data->gauge1_sub_step))
 			data->gauge1_sub_step = 2.0;
+		ROS_DEBUG("\tGauge 1 sub step value: %f", data->gauge1_sub_step);
 
 		if (!n_param.getParam("gauge1_drawing_step", data->gauge1_drawing_step))
 			data->gauge1_drawing_step = 10;
-		ROS_DEBUG(
-				"\tGauge 1 drawing step value: %d", data->gauge1_drawing_step);
+		ROS_DEBUG("\tGauge 1 drawing step value: %d", data->gauge1_drawing_step);
 
 		// **** OPTIONAL
-		n_param.param("gauge1_color_strip_order", gauge1_color_strip,
-				std::string("YOR"));
-		sprintf(data->gauge1_color_strip_order, "%s",
-				gauge1_color_strip.c_str());
-		n_param.getParam("gauge1_green_strip_start",
-				data->gauge1_green_strip_start);
-		n_param.getParam("gauge1_yellow_strip_start",
-				data->gauge1_yellow_strip_start);
-		n_param.getParam("gauge1_red_strip_start",
-				data->gauge1_red_strip_start);
+		n_param.param("gauge1_color_strip_order", gauge1_color_strip, std::string("YOR"));
+		sprintf(data->gauge1_color_strip_order, "%s", gauge1_color_strip.c_str());
+		n_param.getParam("gauge1_green_strip_start", data->gauge1_green_strip_start);
+		n_param.getParam("gauge1_yellow_strip_start", data->gauge1_yellow_strip_start);
+		n_param.getParam("gauge1_red_strip_start", data->gauge1_red_strip_start);
 
 		// -----------------------------------------------------------------
 		// **** allow widget creation
@@ -338,6 +376,12 @@ void *startROS(void *user) {
 		// -----------------------------------------------------------------
 		// **** topics subscribing
 		ROS_INFO("Subscribing to topics");
+		// asctec_mav_framework-related topics
+		fcuImuCustomSub = n.subscribe(fcuImuCustomTopic, 1, fcuImuCustomCallback);
+		fcuGpsSub = n.subscribe(fcuGpsTopic, 1, fcuGpsCallback);
+		fcuStatusSub = n.subscribe(fcuStatusTopic, 1, fcuStatusCallback);
+
+		// legacy asctec_autopilot-related topics
 		imuSub = n.subscribe(imuTopic, 1, imuCallback);
 		heightSub = n.subscribe(heightTopic, 1, heightCallback);
 		imuCalcDataSub = n.subscribe(imuCalcDataTopic, 1, imuCalcDataCallback);

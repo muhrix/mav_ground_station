@@ -117,9 +117,9 @@ ros::Subscriber llStatusSub;
 ros::Subscriber gpsFixSub;
 
 // asctec_mav_framework-related ROS messages
-asctec_hl_comm::mav_imu fcuImgCustomData_;
-sensor_msgs::NavSatFix fcuGpsData_;
-asctec_hl_comm::mav_status fcuStatusData_;
+//asctec_hl_comm::mav_imu fcuImuCustomData_;
+//sensor_msgs::NavSatFix fcuGpsData_;
+//asctec_hl_comm::mav_status fcuStatusData_;
 
 // legacy asctec_autopilot-related ROS messages
 sensor_msgs::Imu imuData_;
@@ -134,7 +134,7 @@ void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr&);
 void fcuGpsCallback(const sensor_msgs::NavSatFixConstPtr&);
 void fcuStatusCallback(const asctec_hl_comm::mav_statusConstPtr&);
 
-// legacy asctec_autopilot-related ROS callback functions
+// legacy asctec_autopilot-related ROS callback function prototypes
 void imuCalcDataCallback(const asctec_msgs::IMUCalcDataConstPtr &);
 //void gpsDataCallback (const asctec_msgs::GPSDataConstPtr &);
 void llStatusCallback(const asctec_msgs::LLStatusConstPtr &);
