@@ -438,14 +438,14 @@ extern void gtk_variometer_set_value (GtkVariometer * vario, gdouble dheight)
 			case 10:
 				if((dheight<60)&&(dheight>-60))
 					priv->dheight=dheight;
-				else
-					g_warning ("GtkVariometer : gtk_variometer_set_value : value out of range");
+				//else
+				//	g_warning ("GtkVariometer : gtk_variometer_set_value : value out of range");
 				break;
 			case 100:
 				if((dheight<600)&&(dheight>-600))
 					priv->dheight=dheight;
-				else
-					g_warning ("GtkVariometer : gtk_variometer_set_value : value out of range");
+				//else
+				//	g_warning ("GtkVariometer : gtk_variometer_set_value : value out of range");
 				break;
 		}
   }

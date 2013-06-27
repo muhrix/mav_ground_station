@@ -437,14 +437,12 @@ extern void gtk_altimeter_set_alti (GtkAltimeter * alt, gdouble alti)
 
   priv = GTK_ALTIMETER_GET_PRIVATE (alt);
 
-  if(!gtk_altimeter_lock_update)
-  {
-		if ((alti >= 0) && (alti <= 999999))
-		{
+  if(!gtk_altimeter_lock_update) {
+		if ((alti >= 0) && (alti <= 999999)) {
 			priv->altitude = alti;
 		}
-		else
-			g_warning ("GtkAltimeter : gtk_altimeter_set_alti : value out of range");
+		//else
+		//	g_warning ("GtkAltimeter : gtk_altimeter_set_alti : value out of range");
   }
 }
 

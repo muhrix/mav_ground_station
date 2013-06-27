@@ -144,8 +144,9 @@ void fcuStatusCallback(const asctec_hl_comm::mav_statusConstPtr& status) {
 	gdk_threads_enter();
 
 	// **** update gauge1: battery voltage [mV]
+	// UPDATE: After testing with the Pelican+fcu, it turns out the unit is [V]
 	if (IS_GTK_GAUGE (data->gauge1))
-		gtk_gauge_set_value(GTK_GAUGE (data->gauge1), status->battery_voltage * 0.001);
+		gtk_gauge_set_value(GTK_GAUGE (data->gauge1), status->battery_voltage); // * 0.001);
 
 	// possible flight modes are: "Acc", "Height", "GPS" and "unknown"
 	gtk_label_set_text(GTK_LABEL (data->flightMode_label), status->flight_mode_ll.c_str());
