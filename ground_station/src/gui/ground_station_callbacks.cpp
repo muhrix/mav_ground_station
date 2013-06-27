@@ -336,6 +336,7 @@ extern "C" G_MODULE_EXPORT void on_combobox_MapProvider_changed (GtkComboBox * b
     default:
       data->map_provider = OSM_GPS_MAP_SOURCE_OPENSTREETMAP;
       data->map_zoom_max = 17;
+      break;
   }
 
   osm_gps_map_track_remove_all (data->map);
@@ -367,7 +368,7 @@ extern "C" G_MODULE_EXPORT void on_combobox_MapProvider_changed (GtkComboBox * b
   gtk_widget_show_all (data->window);
   gtk_widget_hide(data->record_icon);
   gtk_widget_hide(data->status_ok_icon_motor);
-  gtk_widget_hide(data->status_ok_icon_flying);
+  //gtk_widget_hide(data->status_ok_icon_flying);
   gtk_widget_hide(data->status_ok_icon_gps);
   gtk_widget_hide_all(data->telemetry_option_popup);
   gtk_widget_hide_all(data->btn_open_gpsd_option_popup);

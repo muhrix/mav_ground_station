@@ -96,26 +96,35 @@ void fcuGpsCallback(const sensor_msgs::NavSatFixConstPtr& gps) {
 	gdk_threads_enter();
 	//fcuGpsData_ = (*gps);
 
-	gint pixel_x, pixel_y;
+	if (gps->status.status == sensor_msgs::NavSatStatus::STATUS_NO_FIX) {
+		gtk_container_remove(GTK_CONTAINER(data->box_Gps), GTK_WIDGET (data->status_ok_icon_gps));
+		gtk_box_pack_end(GTK_BOX (data->box_Gps), data->status_fail_icon_gps, TRUE, TRUE, 0);
+	}
+	else {
+		gtk_container_remove(GTK_CONTAINER(data->box_Gps), GTK_WIDGET (data->status_fail_icon_gps));
+		gtk_box_pack_end(GTK_BOX (data->box_Gps), data->status_ok_icon_gps, TRUE, TRUE, 0);
 
-	ROS_DEBUG_STREAM("GPS coordinates: " << gps->latitude << ", " << gps->longitude);
-	ROS_DEBUG_STREAM("GPS altitude information: " << gps->altitude);
+		gint pixel_x, pixel_y;
 
-	OsmGpsMapPoint *point = osm_gps_map_point_new_degrees(gps->latitude, gps->longitude);
-	osm_gps_map_convert_geographic_to_screen(data->map, point, &pixel_x, &pixel_y);
+		ROS_DEBUG_STREAM("GPS coordinates: " << gps->latitude << ", " << gps->longitude);
+		ROS_DEBUG_STREAM("GPS altitude information: " << gps->altitude);
 
-	if (OSM_IS_GPS_MAP (data->map)) {
-		// **** Centre map on GPS data received
-		if (data->lock_view) {
-			update_uav_pose_osd(data->osd, TRUE, pixel_x, pixel_y);
-			osm_gps_map_set_center(data->map, gps->latitude, gps->longitude);
+		OsmGpsMapPoint *point = osm_gps_map_point_new_degrees(gps->latitude, gps->longitude);
+		osm_gps_map_convert_geographic_to_screen(data->map, point, &pixel_x, &pixel_y);
+
+		if (OSM_IS_GPS_MAP (data->map)) {
+			// **** Centre map on GPS data received
+			if (data->lock_view) {
+				update_uav_pose_osd(data->osd, TRUE, pixel_x, pixel_y);
+				osm_gps_map_set_center(data->map, gps->latitude, gps->longitude);
+			}
+			else {
+				update_uav_pose_osd(data->osd, FALSE, pixel_x, pixel_y);
+				osm_gps_map_gps_clear(data->map);
+			}
+			// **** Add point to the track
+			osm_gps_map_track_add_point(data->uav_track, point);
 		}
-		else {
-			update_uav_pose_osd(data->osd, FALSE, pixel_x, pixel_y);
-			osm_gps_map_gps_clear(data->map);
-		}
-		// **** Add point to the track
-		osm_gps_map_track_add_point(data->uav_track, point);
 	}
 
 	// **** release GTK thread lock
@@ -138,11 +147,13 @@ void fcuStatusCallback(const asctec_hl_comm::mav_statusConstPtr& status) {
 	if (IS_GTK_GAUGE (data->gauge1))
 		gtk_gauge_set_value(GTK_GAUGE (data->gauge1), status->battery_voltage * 0.001);
 
+	// possible flight modes are: "Acc", "Height", "GPS" and "unknown"
 	gtk_label_set_text(GTK_LABEL (data->flightMode_label), status->flight_mode_ll.c_str());
+
 	// flight time [s]
 	// format time to 00:00 (min:sec)
-	min = (int)status->flight_time / 60;
-	sec = (int)status->flight_time % 60;
+	min = int(status->flight_time) / 60;
+	sec = int(status->flight_time) % 60;
 	if (min < 10)
 		label << "0" << min << ":";
 	else
@@ -155,32 +166,26 @@ void fcuStatusCallback(const asctec_hl_comm::mav_statusConstPtr& status) {
 	gtk_label_set_text(GTK_LABEL (data->upTime_label), label.str().c_str());
 	// remember to empty ostringstream
 	label.str("");
+
 	// CPU load in % of the time of one SDK loop
 	label << status->cpu_load << "%";
 	gtk_label_set_text(GTK_LABEL (data->cpuLoad_label), label.str().c_str());
+	label.str("");
+
+	// Number of GPS Satellites (int32)
+	label << int(status->gps_num_satellites);
+	gtk_label_set_text(GTK_LABEL (data->numSats_label), label.str().c_str());
 
 
-
-	/*if(llStatus_.flying==0)
-	 {
-	 gtk_container_remove(GTK_CONTAINER(data->box_Flying),GTK_WIDGET (data->status_ok_icon_flying));
-	 gtk_box_pack_end (GTK_BOX (data->box_Flying),data->status_fail_icon_flying, TRUE, TRUE, 0);
-	 }
-	 else
-	 {
-	 gtk_container_remove(GTK_CONTAINER(data->box_Flying),GTK_WIDGET (data->status_fail_icon_flying));
-	 gtk_box_pack_end (GTK_BOX (data->box_Flying),data->status_ok_icon_flying, TRUE, TRUE, 0);
-	 }
-	 if(llStatus_.motors_on==0)
-	 {
-	 gtk_container_remove(GTK_CONTAINER(data->box_MotorStatus),GTK_WIDGET (data->status_ok_icon_motor));
-	 gtk_box_pack_end (GTK_BOX (data->box_MotorStatus),data->status_fail_icon_motor, TRUE, TRUE, 0);
-	 }
-	 else
-	 {
-	 gtk_container_remove(GTK_CONTAINER(data->box_MotorStatus),GTK_WIDGET (data->status_fail_icon_motor));
-	 gtk_box_pack_end (GTK_BOX (data->box_MotorStatus),data->status_ok_icon_motor, TRUE, TRUE, 0);
-	 } */
+	// possible modes are: "off", "stopping", "starting" and "running"
+	if (status->motor_status.compare("off") == 0) {
+		gtk_container_remove(GTK_CONTAINER(data->box_MotorStatus), GTK_WIDGET (data->status_ok_icon_motor));
+		gtk_box_pack_end(GTK_BOX (data->box_MotorStatus), data->status_fail_icon_motor, TRUE, TRUE, 0);
+	}
+	else {
+		gtk_container_remove(GTK_CONTAINER(data->box_MotorStatus), GTK_WIDGET (data->status_fail_icon_motor));
+		gtk_box_pack_end(GTK_BOX (data->box_MotorStatus), data->status_ok_icon_motor, TRUE, TRUE, 0);
+	}
 
 	// **** release GTK thread lock
 	gdk_threads_leave();
@@ -557,23 +562,15 @@ void load_icon() {
 			GTK_IMAGE (img_status_fail));
 
 	data->status_ok_icon_motor =
-			GTK_WIDGET (gtk_image_new_from_pixbuf
-					(gdk_pixbuf_scale_simple (data->status_ok_icon_64, 22, 22, GDK_INTERP_HYPER)));
+			GTK_WIDGET (gtk_image_new_from_pixbuf (gdk_pixbuf_scale_simple (data->status_ok_icon_64, 22, 22, GDK_INTERP_HYPER)));
 	data->status_fail_icon_motor =
-			GTK_WIDGET (gtk_image_new_from_pixbuf
-					(gdk_pixbuf_scale_simple (data->status_fail_icon_64, 22, 22, GDK_INTERP_HYPER)));
+			GTK_WIDGET (gtk_image_new_from_pixbuf (gdk_pixbuf_scale_simple (data->status_fail_icon_64, 22, 22, GDK_INTERP_HYPER)));
 	data->status_ok_icon_gps =
-			GTK_WIDGET (gtk_image_new_from_pixbuf
-					(gdk_pixbuf_scale_simple (data->status_ok_icon_64, 22, 22, GDK_INTERP_HYPER)));
+			GTK_WIDGET (gtk_image_new_from_pixbuf (gdk_pixbuf_scale_simple (data->status_ok_icon_64, 22, 22, GDK_INTERP_HYPER)));
 	data->status_fail_icon_gps =
-			GTK_WIDGET (gtk_image_new_from_pixbuf
-					(gdk_pixbuf_scale_simple (data->status_fail_icon_64, 22, 22, GDK_INTERP_HYPER)));
-	data->status_ok_icon_flying =
-			GTK_WIDGET (gtk_image_new_from_pixbuf
-					(gdk_pixbuf_scale_simple (data->status_ok_icon_64, 22, 22, GDK_INTERP_HYPER)));
-	data->status_fail_icon_flying =
-			GTK_WIDGET (gtk_image_new_from_pixbuf
-					(gdk_pixbuf_scale_simple (data->status_fail_icon_64, 22, 22, GDK_INTERP_HYPER)));
+			GTK_WIDGET (gtk_image_new_from_pixbuf (gdk_pixbuf_scale_simple (data->status_fail_icon_64, 22, 22, GDK_INTERP_HYPER)));
+	//data->status_ok_icon_flying = GTK_WIDGET (gtk_image_new_from_pixbuf (gdk_pixbuf_scale_simple (data->status_ok_icon_64, 22, 22, GDK_INTERP_HYPER)));
+	//data->status_fail_icon_flying = GTK_WIDGET (gtk_image_new_from_pixbuf (gdk_pixbuf_scale_simple (data->status_fail_icon_64, 22, 22, GDK_INTERP_HYPER)));
 	data->record_icon =
 			GTK_WIDGET (gtk_image_new_from_pixbuf (gdk_pixbuf_scale_simple (data->record_icon_64, 30, 30, GDK_INTERP_HYPER)));
 	data->record_g_icon =
@@ -699,8 +696,9 @@ int main(int argc, char **argv) {
 			data->variometer_step_value, "radial-color", data->radial_color,
 			NULL);
 
-	data->widget_table =
-			GTK_WIDGET (gtk_builder_get_object (builder, "table_Widgets"));
+	data->widget_table = GTK_WIDGET (gtk_builder_get_object (builder, "table_Widgets"));
+
+	// place widgets within table
 	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->alt,    0, 1,  0, 1);
 	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->arh,    1, 2,  0, 1);
 	gtk_table_attach_defaults(GTK_TABLE (data->widget_table), data->comp,   2, 3,  0, 1);
@@ -792,48 +790,29 @@ int main(int argc, char **argv) {
 
 	data->recording = 0;
 	data->rosbag_record_cmd = "rosbag record";
-	data->topicsList =
-			GTK_LIST_STORE (gtk_builder_get_object (builder, "liststore_TopicList"));
-	data->cmd_line_entry =
-			GTK_WIDGET (gtk_builder_get_object (builder, "entry_CommandLine"));
-	data->prefix_entry =
-			GTK_WIDGET (gtk_builder_get_object (builder, "entry_Prefix"));
-	data->info_textview =
-			GTK_WIDGET (gtk_builder_get_object (builder, "textview_BagInfo"));
-	data->update_btn =
-			GTK_WIDGET (gtk_builder_get_object (builder, "button_UpdateTopicList"));
-	data->box_MotorStatus =
-			GTK_WIDGET (gtk_builder_get_object (builder, "hbox_MotorStatus"));
-	data->box_Flying =
-			GTK_WIDGET (gtk_builder_get_object (builder, "hbox_Flying"));
+	data->topicsList = GTK_LIST_STORE (gtk_builder_get_object (builder, "liststore_TopicList"));
+	data->cmd_line_entry = GTK_WIDGET (gtk_builder_get_object (builder, "entry_CommandLine"));
+	data->prefix_entry = GTK_WIDGET (gtk_builder_get_object (builder, "entry_Prefix"));
+	data->info_textview = GTK_WIDGET (gtk_builder_get_object (builder, "textview_BagInfo"));
+	data->update_btn = GTK_WIDGET (gtk_builder_get_object (builder, "button_UpdateTopicList"));
+	data->box_MotorStatus = GTK_WIDGET (gtk_builder_get_object (builder, "hbox_MotorStatus"));
+	//data->box_Flying = GTK_WIDGET (gtk_builder_get_object (builder, "hbox_Flying"));
 	data->box_Gps = GTK_WIDGET (gtk_builder_get_object (builder, "hbox_Gps"));
-	data->flightMode_label =
-			GTK_WIDGET (gtk_builder_get_object (builder, "label_FlightModeValue"));
-	data->upTime_label =
-			GTK_WIDGET (gtk_builder_get_object (builder, "label_UpTimeValue"));
-	data->cpuLoad_label =
-			GTK_WIDGET (gtk_builder_get_object (builder, "label_CpuLoadValue"));
-	data->box_RecordStatus =
-			GTK_WIDGET (gtk_builder_get_object (builder, "hbox_RecordStatus"));
-	data->record_stop_btn =
-			GTK_WIDGET (gtk_builder_get_object (builder, "button_RecordStop"));
+	data->numSats_label = GTK_WIDGET (gtk_builder_get_object (builder, "label_NumSatsValue"));
+	data->flightMode_label = GTK_WIDGET (gtk_builder_get_object (builder, "label_FlightModeValue"));
+	data->upTime_label = GTK_WIDGET (gtk_builder_get_object (builder, "label_UpTimeValue"));
+	data->cpuLoad_label = GTK_WIDGET (gtk_builder_get_object (builder, "label_CpuLoadValue"));
+	data->box_RecordStatus = GTK_WIDGET (gtk_builder_get_object (builder, "hbox_RecordStatus"));
+	data->record_stop_btn = GTK_WIDGET (gtk_builder_get_object (builder, "button_RecordStop"));
 
-	gtk_box_pack_end(GTK_BOX (data->box_MotorStatus),
-			data->status_ok_icon_motor, TRUE, TRUE, 0);
-	gtk_box_pack_end(GTK_BOX (data->box_MotorStatus),
-			data->status_fail_icon_motor, TRUE, TRUE, 0);
-	gtk_box_pack_end(GTK_BOX (data->box_Flying), data->status_ok_icon_flying,
-			TRUE, TRUE, 0);
-	gtk_box_pack_end(GTK_BOX (data->box_Flying), data->status_fail_icon_flying,
-			TRUE, TRUE, 0);
-	gtk_box_pack_end(GTK_BOX (data->box_Gps), data->status_ok_icon_gps, TRUE,
-			TRUE, 0);
-	gtk_box_pack_end(GTK_BOX (data->box_Gps), data->status_fail_icon_gps, TRUE,
-			TRUE, 0);
-	gtk_box_pack_end(GTK_BOX (data->box_RecordStatus), data->record_icon, TRUE,
-			TRUE, 0);
-	gtk_box_pack_end(GTK_BOX (data->box_RecordStatus), data->record_g_icon,
-			TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX (data->box_MotorStatus), data->status_ok_icon_motor, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX (data->box_MotorStatus), data->status_fail_icon_motor, TRUE, TRUE, 0);
+	//gtk_box_pack_end(GTK_BOX (data->box_Flying), data->status_ok_icon_flying, TRUE, TRUE, 0);
+	//gtk_box_pack_end(GTK_BOX (data->box_Flying), data->status_fail_icon_flying, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX (data->box_Gps), data->status_ok_icon_gps, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX (data->box_Gps), data->status_fail_icon_gps, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX (data->box_RecordStatus), data->record_icon, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX (data->box_RecordStatus), data->record_g_icon, TRUE, TRUE, 0);
 
 	gtk_button_set_image(GTK_BUTTON (data->update_btn),
 			gtk_image_new_from_pixbuf(
@@ -854,7 +833,7 @@ int main(int argc, char **argv) {
 	gtk_widget_show_all(data->window);
 	gtk_widget_hide(data->record_icon);
 	gtk_widget_hide(data->status_ok_icon_motor);
-	gtk_widget_hide(data->status_ok_icon_flying);
+	//gtk_widget_hide(data->status_ok_icon_flying);
 	gtk_widget_hide(data->status_ok_icon_gps);
 	gtk_widget_hide_all(data->telemetry_option_popup);
 	gtk_widget_hide_all(data->gpsd_option_popup);

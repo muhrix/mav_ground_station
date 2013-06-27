@@ -74,15 +74,15 @@ public:
   GtkWidget *status_fail_icon_motor;
   GtkWidget *status_ok_icon_gps;
   GtkWidget *status_fail_icon_gps;
-  GtkWidget *status_ok_icon_flying;
-  GtkWidget *status_fail_icon_flying;
+  //GtkWidget *status_ok_icon_flying;
+  //GtkWidget *status_fail_icon_flying;
 
   // -------------------------------------------------------------------
   // -------------------------------------------------------------------
   // **** Status bar
   GtkWidget *box_MotorStatus;
-  GtkWidget *box_Flying;
   GtkWidget *box_Gps;
+  GtkWidget *numSats_label;
   GtkWidget *flightMode_label;
   GtkWidget *upTime_label;
   GtkWidget *cpuLoad_label;
