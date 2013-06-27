@@ -68,8 +68,8 @@ int main(int argc, char **argv) {
 		delta_height = alt - prev_height;
 		prev_height = alt;
 
-		imu.height = alt * 1000.0; // must be in [mm]
-		imu.differential_height = delta_height * (double)rate * 1000.0; // must be in [mm/s]
+		imu.height = alt; // * 1000.0; // must be in [mm]
+		imu.differential_height = delta_height * (double)rate; // * 1000.0; // must be in [mm/s]
 		imu.orientation.x = orientation.getX();
 		imu.orientation.y = orientation.getY();
 		imu.orientation.w = orientation.getW();
