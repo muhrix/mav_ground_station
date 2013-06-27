@@ -219,26 +219,26 @@ static void gtk_variometer_class_init (GtkVariometerClass * klass)
   g_object_class_install_property (obj_class,
                                    PROP_GRAYSCALE_COLOR,
                                    g_param_spec_boolean ("grayscale-color",
-                                                         "use grayscale for the widget color",
-                                                         "use grayscale for the widget color", FALSE,
+                                                         "use greyscale for the widget colour",
+                                                         "use greyscale for the widget colour", FALSE,
                                                          G_PARAM_WRITABLE));
   g_object_class_install_property (obj_class,
                                    PROP_UNIT_IS_FEET,
                                    g_param_spec_boolean ("unit-is-feet",
-                                                         "set the variometer unit to feet or meter",
-                                                         "set the variometer unit to feet or meter",
+                                                         "set the variometer unit to feet or metres",
+                                                         "set the variometer unit to feet or metres",
                                                          TRUE, G_PARAM_WRITABLE));
   g_object_class_install_property (obj_class,
                                    PROP_UNIT_STEP_VALUE,
                                    g_param_spec_int ("unit-step-value",
-                                                     "select the value of the initial step (100 or 1000)",
-                                                     "select the value of the initial step (100 or 1000)",
-                                                     100, 1000, 100, G_PARAM_WRITABLE));
+                                                     "select the value of the initial step (1 or 10)",
+                                                     "select the value of the initial step (1 or 10)",
+                                                     1, 10, 1, G_PARAM_WRITABLE));
   g_object_class_install_property (obj_class,
                                    PROP_RADIAL_COLOR,
                                    g_param_spec_boolean ("radial-color",
-                                                         "the widget use radial color",
-                                                         "the widget use radial color", TRUE, G_PARAM_WRITABLE));
+                                                         "the widget use radial colour",
+                                                         "the widget use radial colour", TRUE, G_PARAM_WRITABLE));
   return;
 }
 
@@ -269,7 +269,7 @@ static void gtk_variometer_init (GtkVariometer * vario)
   priv->draw_once = FALSE;
   priv->grayscale_color = FALSE;
   priv->radial_color = TRUE;
-  priv->unit_value = 10;
+  priv->unit_value = 1;
   priv->dheight = 0;
 
   priv->bg_color_bounderie.red = 6553.5;        // 0.1 cairo
@@ -435,16 +435,16 @@ extern void gtk_variometer_set_value (GtkVariometer * vario, gdouble dheight)
   {
 	   switch(priv->unit_value)
 	   {
+			case 1:
+				if((dheight<6)&&(dheight>-6))
+					priv->dheight=dheight;
+				else
+					g_warning ("GtkVariometer : gtk_variometer_set_value : value out of range");
+				break;
 			case 10:
 				if((dheight<60)&&(dheight>-60))
 					priv->dheight=dheight;
-				else 
-					g_warning ("GtkVariometer : gtk_variometer_set_value : value out of range");
-				break;
-			case 100:
-				if((dheight<600)&&(dheight>-600))
-					priv->dheight=dheight;
-				else 
+				else
 					g_warning ("GtkVariometer : gtk_variometer_set_value : value out of range");
 				break;
 		}
@@ -771,20 +771,20 @@ static void gtk_variometer_draw_base (GtkWidget * vario,  cairo_t * cr)
   cairo_set_font_size (cr, 0.08 * radius);
   switch (priv->unit_value)
   {
+    case 1:
+      cairo_move_to (cr, x - 0.35 * radius, y + 0.4 * radius);
+      if (priv->unit_is_feet)
+        cairo_show_text (cr, "1 FEET PER SEC");
+      else
+        cairo_show_text (cr, "1 METRE PER SEC");
+      cairo_stroke (cr);
+      break;
     case 10:
       cairo_move_to (cr, x - 0.35 * radius, y + 0.4 * radius);
       if (priv->unit_is_feet)
         cairo_show_text (cr, "10 FEET PER SEC");
       else
         cairo_show_text (cr, "10 METRES PER SEC");
-      cairo_stroke (cr);
-      break;
-    case 100:
-      cairo_move_to (cr, x - 0.35 * radius, y + 0.4 * radius);
-      if (priv->unit_is_feet)
-        cairo_show_text (cr, "100 FEET PER SEC");
-      else
-        cairo_show_text (cr, "100 METRES PER SEC");
       cairo_stroke (cr);
       break;
   }
@@ -1142,8 +1142,6 @@ static void gtk_variometer_draw_hand (GtkWidget * vario,  cairo_t * cr)
   double radius = priv->radius;
   int dheight = priv->dheight;
 
-  ROS_INFO_STREAM("dheight: " << dheight);
-
   // **** centre circle
   cairo_save (cr);
   if (!priv->grayscale_color)
@@ -1347,9 +1345,9 @@ static void gtk_variometer_set_property (GObject * object, guint prop_id, const 
       break;
     case PROP_UNIT_STEP_VALUE:
       priv->unit_value = g_value_get_int (value);
-      if ((priv->unit_value != 10) && (priv->unit_value != 100))
+      if ((priv->unit_value != 1) && (priv->unit_value != 10))
       {
-        priv->unit_value = 10;
+        priv->unit_value = 1;
         g_warning ("GtkVariometer: gtk_variometer_set_property: unit-step-value out of range");
       }
       break;
