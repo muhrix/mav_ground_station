@@ -9,10 +9,10 @@
 		
 		<!-- Altimeter parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 		<param name="altimeter_unit_is_feet" value="false"/>	
-		<param name="altimeter_step_value" value="100"/>
+		<param name="altimeter_step_value" value="10"/>
 		
 		<!-- Variometer parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<param name="variometer_step_value" value="100"/>
+		<param name="variometer_step_value" value="10"/>
 				
 	   <!-- Gauge1 parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 		<param name="gauge1_name" value="Battery Voltage"/>	

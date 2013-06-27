@@ -78,13 +78,13 @@ void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr& imu) {
 	// height [mm]
 	if (IS_GTK_ALTIMETER (data->alt)) {
 		ROS_DEBUG_STREAM("Current altitude: " << imu->height << " metres");
-		gtk_altimeter_set_alti(GTK_ALTIMETER (data->alt), imu->height * 0.001);
+		gtk_altimeter_set_alti(GTK_ALTIMETER (data->alt), imu->height); // * 0.001);
 	}
 
 	// differential_height [mm/s]
 	if (IS_GTK_VARIOMETER (data->vario)) {
 		ROS_DEBUG_STREAM("Altitude variation: " << imu->differential_height << " metres/sec");
-		gtk_variometer_set_value(GTK_VARIOMETER (data->vario), imu->differential_height * 0.001);
+		gtk_variometer_set_value(GTK_VARIOMETER (data->vario), imu->differential_height); // * 0.001);
 	}
 
 	// **** release GTK thread lock
