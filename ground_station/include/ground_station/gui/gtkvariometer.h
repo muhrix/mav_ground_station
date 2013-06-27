@@ -100,6 +100,7 @@ G_BEGIN_DECLS
  * See GObject and GTK+ references for
  * more informations: http://library.gnome.org/devel/references.html.en
  */
+
 typedef struct _GtkVariometerClass
 {
   GtkDrawingAreaClass parent_class;

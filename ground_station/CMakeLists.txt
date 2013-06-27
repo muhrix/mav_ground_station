@@ -58,9 +58,9 @@ set(GROUNDSTATION_SRC   src/gui/gtkaltimeter.cpp
 rosbuild_add_executable(${GROUNDSTATION}  ${GROUNDSTATION_SRC})
 
 
-set(FAKEPOSE fakepose)
-set(FAKEPOSEN_SRC   src/fake_alti.cpp)
-rosbuild_add_executable(${FAKEPOSE}  ${FAKEPOSEN_SRC})
+set(FAKEDATA fakedata)
+set(FAKEDATAN_SRC   src/fake_data.cpp)
+rosbuild_add_executable(${FAKEDATA}  ${FAKEDATAN_SRC})
 
 ########## EXTERNAL DEPENDENCIES ##################
 

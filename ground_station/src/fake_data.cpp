@@ -1,4 +1,5 @@
 #include <ros/ros.h>
+#include <tf/transform_datatypes.h>
 #include <asctec_hl_comm/mav_imu.h>
 #include <cmath>
 
@@ -6,7 +7,7 @@ int main(int argc, char **argv) {
 	asctec_hl_comm::mav_imu imu;
 	ros::init(argc, argv, "fake_data");
 	ros::NodeHandle n;
-	ros::Publisher chatter_pub = n.advertise<asctec_hl_comm::mav_imu>("fake_data", 1);
+	ros::Publisher pub = n.advertise<asctec_hl_comm::mav_imu>("fake_imu", 1);
 
 	int rate = 10; // Hz
 	// 20 Hz means the loop runs every 50 milliseconds
@@ -25,6 +26,10 @@ int main(int argc, char **argv) {
 
 	double turning_t = std::sqrt(max_height/a);
 	double turning_v = a * turning_t;
+
+	double roll = 0, pitch = 0, yaw = 0;
+	tf::Quaternion orientation;
+	orientation.setRPY(roll, pitch, yaw);
 
 	//ROS_INFO_STREAM("t_t = " << turning_t << "\tt_v = " << turning_v);
 
@@ -63,9 +68,13 @@ int main(int argc, char **argv) {
 		delta_height = alt - prev_height;
 		prev_height = alt;
 
-		imu.height = alt * 1000.0;
-		imu.differential_height = delta_height * 1000.0;
-		chatter_pub.publish(imu);
+		imu.height = alt * 1000.0; // must be in [mm]
+		imu.differential_height = delta_height * (double)rate * 1000.0; // must be in [mm/s]
+		imu.orientation.x = orientation.getX();
+		imu.orientation.y = orientation.getY();
+		imu.orientation.w = orientation.getW();
+		imu.orientation.z = orientation.getZ();
+		pub.publish(imu);
 		ros::spinOnce();
 		loop_rate.sleep();
 	}

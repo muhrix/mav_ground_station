@@ -133,7 +133,7 @@ void *startROS(void *user) {
 
 		if (!n_param.getParam("variometer_step_value",
 				data->variometer_step_value))
-			data->variometer_step_value = 10;
+			data->variometer_step_value = 100;
 		ROS_DEBUG("\tVariometer step value: %d", data->variometer_step_value);
 
 		// -----------------------------------------------------------------

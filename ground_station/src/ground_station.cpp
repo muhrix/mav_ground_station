@@ -61,12 +61,18 @@ void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr& imu) {
 	orientation.setW(imu->orientation.w);
 	tf::Matrix3x3(orientation).getRPY(roll, pitch, yaw);
 
-	if (IS_GTK_ARTIFICIAL_HORIZON (data->arh)) {
-		ROS_DEBUG_STREAM("Yaw: " << RAD2DEG(yaw) << "\tPitch: " << RAD2DEG(pitch) << "\tRoll: "
-				<< RAD2DEG(roll) << "\tRollBis: " << (double)(((int)(RAD2DEG(roll)*1000)+360000)%360000)/1000);
+	ROS_DEBUG_STREAM("Yaw: " << RAD2DEG(yaw) << "\tPitch: " << RAD2DEG(pitch) << "\tRoll: "
+			<< RAD2DEG(roll) << "\tRollBis: " << (double)(((int)(RAD2DEG(roll)*1000)+360000)%360000)/1000);
 
+	if (IS_GTK_ARTIFICIAL_HORIZON (data->arh)) {
 		gtk_artificial_horizon_set_value(GTK_ARTIFICIAL_HORIZON (data->arh),
 				(double) (((int) (RAD2DEG(roll) * 1000) + 360000) % 360000) / 1000, (double) -RAD2DEG(pitch));
+	}
+
+	// yaw from 0...360 [deg*100]
+	if (IS_GTK_COMPASS (data->comp2)) {
+		gtk_compass_set_angle(GTK_COMPASS (data->comp2),
+				(double) (((int) (RAD2DEG(yaw) * 1000) + 360000) % 360000) / 1000);
 	}
 
 	// height [mm]
@@ -79,12 +85,6 @@ void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr& imu) {
 	if (IS_GTK_VARIOMETER (data->vario)) {
 		ROS_DEBUG_STREAM("Altitude variation: " << imu->differential_height << " metres/sec");
 		gtk_variometer_set_value(GTK_VARIOMETER (data->vario), imu->differential_height * 0.001);
-	}
-
-	// yaw from 0...360 [deg*100]
-	if (IS_GTK_COMPASS (data->comp2)) {
-		gtk_compass_set_angle(GTK_COMPASS (data->comp2),
-				(double) (((int) (RAD2DEG(yaw) * 1000) + 360000) % 360000) / 1000);
 	}
 
 	// **** release GTK thread lock
@@ -136,7 +136,7 @@ void fcuStatusCallback(const asctec_hl_comm::mav_statusConstPtr& status) {
 
 	// **** update gauge1: battery voltage [mV]
 	if (IS_GTK_GAUGE (data->gauge1))
-		gtk_gauge_set_value(GTK_GAUGE (data->gauge1), status->battery_voltage * 1000.);
+		gtk_gauge_set_value(GTK_GAUGE (data->gauge1), status->battery_voltage * 0.001);
 
 	gtk_label_set_text(GTK_LABEL (data->flightMode_label), status->flight_mode_ll.c_str());
 	// flight time [s]
@@ -151,9 +151,11 @@ void fcuStatusCallback(const asctec_hl_comm::mav_statusConstPtr& status) {
 		label << "0" << sec;
 	else
 		label << sec;
+
 	gtk_label_set_text(GTK_LABEL (data->upTime_label), label.str().c_str());
 	// remember to empty ostringstream
 	label.str("");
+	// CPU load in % of the time of one SDK loop
 	label << status->cpu_load << "%";
 	gtk_label_set_text(GTK_LABEL (data->cpuLoad_label), label.str().c_str());
 
