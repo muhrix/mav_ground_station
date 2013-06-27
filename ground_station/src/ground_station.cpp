@@ -49,12 +49,10 @@ void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr& imu) {
 	// http://ros.org/rosdoclite/groovy/api/asctec_hl_comm/html/HL__interface_8h.html
 	// http://ros.org/rosdoclite/groovy/api/asctec_hl_comm/html/HL__interface_8h_source.html
 	// http://ros.org/rosdoclite/groovy/api/asctec_hl_interface/html/hl__interface_8cpp_source.html
-	// http://ros.org/rosdoclite/groovy/api/asctec_hl_comm/html/HL__interface_8h.html
 
 	// **** get GTK thread lock
 	gdk_threads_enter();
 	//fcuImuCustomData_ = (*imu);
-
 	double roll, pitch, yaw;
 	tf::Quaternion orientation;
 	orientation.setX(imu->orientation.x);
@@ -63,27 +61,31 @@ void fcuImuCustomCallback(const asctec_hl_comm::mav_imuConstPtr& imu) {
 	orientation.setW(imu->orientation.w);
 	tf::Matrix3x3(orientation).getRPY(roll, pitch, yaw);
 
-	ROS_DEBUG_STREAM("Yaw: " << RAD2DEG(yaw) << "\tPitch: " << RAD2DEG(pitch) << "\tRoll: "
-			<< RAD2DEG(roll) << "\tRollBis: " << (double)(((int)(RAD2DEG(roll)*1000)+360000)%360000)/1000);
-	ROS_DEBUG_STREAM("Current altitude: " << imu->height << " metres");
-	ROS_DEBUG_STREAM("Altitude variation: " << imu->differential_height << " metres/sec");
+	if (IS_GTK_ARTIFICIAL_HORIZON (data->arh)) {
+		ROS_DEBUG_STREAM("Yaw: " << RAD2DEG(yaw) << "\tPitch: " << RAD2DEG(pitch) << "\tRoll: "
+				<< RAD2DEG(roll) << "\tRollBis: " << (double)(((int)(RAD2DEG(roll)*1000)+360000)%360000)/1000);
 
-	if (IS_GTK_ARTIFICIAL_HORIZON (data->arh))
 		gtk_artificial_horizon_set_value(GTK_ARTIFICIAL_HORIZON (data->arh),
 				(double) (((int) (RAD2DEG(roll) * 1000) + 360000) % 360000) / 1000, (double) -RAD2DEG(pitch));
+	}
 
 	// height [mm]
-	if (IS_GTK_ALTIMETER (data->alt))
-		gtk_altimeter_set_alti(GTK_ALTIMETER (data->alt), imu->height * 1000.);
+	if (IS_GTK_ALTIMETER (data->alt)) {
+		ROS_DEBUG_STREAM("Current altitude: " << imu->height << " metres");
+		gtk_altimeter_set_alti(GTK_ALTIMETER (data->alt), imu->height * 0.001);
+	}
 
 	// differential_height [mm/s]
-	if (IS_GTK_VARIOMETER (data->vario))
-		gtk_variometer_set_value(GTK_VARIOMETER (data->vario), imu->differential_height * 1000.);
+	if (IS_GTK_VARIOMETER (data->vario)) {
+		ROS_DEBUG_STREAM("Altitude variation: " << imu->differential_height << " metres/sec");
+		gtk_variometer_set_value(GTK_VARIOMETER (data->vario), imu->differential_height * 0.001);
+	}
 
 	// yaw from 0...360 [deg*100]
-	if (IS_GTK_COMPASS (data->comp2))
+	if (IS_GTK_COMPASS (data->comp2)) {
 		gtk_compass_set_angle(GTK_COMPASS (data->comp2),
 				(double) (((int) (RAD2DEG(yaw) * 1000) + 360000) % 360000) / 1000);
+	}
 
 	// **** release GTK thread lock
 	gdk_threads_leave();
